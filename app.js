@@ -33,16 +33,16 @@ const Q = {
     {t:'Acentuação', p:'Qual palavra tem a força da voz na última sílaba?', o:['café','árvore','lápis','mesa'], c:0, e:'Café é oxítona: a força da voz fica no último som.'}
   ],
   ing: [
-    {t:'Vocabulário', p:'What is gato in English?', o:['dog','cat','bird','fish'], c:1, e:'Gato é cat.'},
-    {t:'Cores', p:'What color is azul?', o:['red','green','blue','yellow'], c:2, e:'Azul é blue.'},
-    {t:'Números', p:'How do you say três in English?', o:['two','three','four','five'], c:1, e:'Três é three.'},
-    {t:'Verbo to be', p:'I ___ a student.', o:['am','is','are','be'], c:0, e:'Use a forma am com I.'},
-    {t:'Vocabulário', p:'What is casa in English?', o:['house','horse','hour','hole'], c:0, e:'Casa é house.'},
-    {t:'Saudações', p:'Good morning means:', o:['Boa noite','Bom dia','Boa tarde','Tchau'], c:1, e:'Good morning significa Bom dia.'},
-    {t:'Verbos', p:'She ___ a book.', o:['read','reads','reading','readed'], c:1, e:'Com he, she ou it, acrescentamos -s ao verbo.'},
-    {t:'Frutas', p:'What is maçã?', o:['banana','orange','apple','grape'], c:2, e:'Maçã é apple.'},
-    {t:'Dias', p:'Which day comes after Monday?', o:['Sunday','Tuesday','Friday','Wednesday'], c:1, e:'Depois de Monday vem Tuesday.'},
-    {t:'Plural', p:'I have two ___.', o:['cat','cats','catss','cates'], c:1, e:'Para o plural, geralmente acrescentamos -s.'}
+    {t:'Vocabulário', p:'Como se diz "gato" em inglês?', o:['dog','cat','bird','fish'], c:1, e:'Gato em inglês é cat.'},
+    {t:'Cores', p:'Como se diz "azul" em inglês?', o:['red','green','blue','yellow'], c:2, e:'Azul em inglês é blue.'},
+    {t:'Números', p:'Como se diz "três" em inglês?', o:['two','three','four','five'], c:1, e:'Três em inglês é three.'},
+    {t:'Verbo to be', p:'Complete a frase: I ___ a student (Eu sou um estudante).', o:['am','is','are','be'], c:0, e:'Com o pronome I usamos am.'},
+    {t:'Vocabulário', p:'Como se diz "casa" em inglês?', o:['house','horse','hour','hole'], c:0, e:'Casa em inglês é house.'},
+    {t:'Saudações', p:'O que significa "Good morning"?', o:['Boa noite','Bom dia','Boa tarde','Tchau'], c:1, e:'Good morning significa Bom dia.'},
+    {t:'Verbos', p:'Complete a frase: She ___ a book (Ela lê um livro).', o:['read','reads','reading','readed'], c:1, e:'Com he, she ou it, acrescentamos -s ao verbo.'},
+    {t:'Frutas', p:'Como se diz "maçã" em inglês?', o:['banana','orange','apple','grape'], c:2, e:'Maçã em inglês é apple.'},
+    {t:'Dias da semana', p:'Qual dia vem depois de Monday (segunda-feira)?', o:['Sunday','Tuesday','Friday','Wednesday'], c:1, e:'Depois de Monday (segunda) vem Tuesday (terça).'},
+    {t:'Plural', p:'Complete a frase: I have two ___ (Eu tenho dois gatos).', o:['cat','cats','catss','cates'], c:1, e:'Para o plural, geralmente acrescentamos -s.'}
   ]
 };
 
