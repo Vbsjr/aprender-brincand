@@ -1,0 +1,28 @@
+:root{--bg:#f5f3ff;--card:#fff;--text:#1e1b4b;--muted:#6b7280;--p:#7c3aed;--pd:#6d28d9;--ok:#16a34a;--ok-bg:#dcfce7;--no:#dc2626;--no-bg:#fee2e2;--b:#e5e7eb}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.w{max-width:520px;margin:0 auto;padding:24px 16px 40px}
+h1{font-size:28px;margin:6px 0 12px}
+p{font-size:18px;line-height:1.5}
+label{display:block;font-size:17px;margin-top:8px}
+input,select{width:100%;font-size:18px;padding:14px;border:2px solid var(--b);border-radius:14px;background:#fff;color:var(--text);margin:6px 0 10px}
+.btn{display:block;width:100%;font-size:19px;padding:16px;border:0;border-radius:16px;background:var(--p);color:#fff;cursor:pointer;margin:10px 0;min-height:56px}
+.btn:active{background:var(--pd)}
+.btn.sec{background:#fff;color:var(--p);border:2px solid var(--p)}
+.btn:disabled{background:#c4b5fd;border-color:#c4b5fd;color:#fff;cursor:not-allowed}
+.card{background:var(--card);border-radius:18px;padding:16px;margin:12px 0;border:1px solid var(--b)}
+.opc{text-align:left;font-size:19px}
+.opc.ok{background:var(--ok-bg);border-color:var(--ok);color:#14532d}
+.opc.no{background:var(--no-bg);border-color:var(--no);color:#7f1d1d}
+.msg{font-size:19px;font-weight:bold;margin:8px 0}
+.exp{font-size:17px;background:#fffbeb;border-radius:14px;padding:12px;border:1px solid #fcd34d}
+.topo{color:var(--muted);font-size:15px;margin-bottom:6px}
+.stats{display:flex;gap:10px;margin:12px 0}
+.stat{flex:1;text-align:center;background:#fff;border-radius:14px;padding:12px;border:1px solid var(--b)}
+.stat b{font-size:24px;display:block}
+.stat span{color:var(--muted);font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.slot{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:32px;background:#fff;border-radius:16px;border:2px dashed var(--b);color:var(--muted)}
+.slot.got{border:2px solid var(--p);background:#faf5ff;color:var(--text)}
+.aviso{font-size:15px;color:var(--muted);text-align:center;margin-top:14px}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aprender Brincando</title>
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#7c3aed">
+<link rel="icon" href="icons/icon-192.png">
+</head>
+<body>
+<div class="w">
+
+<section id="t-boas" class="tela" hidden>
+  <h1>Aprender Brincando</h1>
+  <p>Pratique matemática e ganhe figurinhas para completar seu álbum!</p>
+  <button class="btn" data-ir="t-cadastro">Começar</button>
+</section>
+
+<section id="t-cadastro" class="tela" hidden>
+  <h1>Cadastro</h1>
+  <form id="form-cad">
+    <label>Nome da criança<input id="c-nome" maxlength="30" required></label>
+    <label>Idade<input id="c-idade" type="number" min="5" max="12" required></label>
+    <label>Série<select id="c-serie">
+      <option value="1">1º ano</option><option value="2">2º ano</option><option value="3">3º ano</option>
+      <option value="4" selected>4º ano</option><option value="5">5º ano</option>
+    </select></label>
+    <label>Senha dos pais (4 números)<input id="c-pin" inputmode="numeric" maxlength="4" required></label>
+    <button class="btn" type="submit">Salvar e continuar</button>
+  </form>
+</section>
+
+<section id="t-menu" class="tela" hidden>
+  <h1 id="m-ola">Oi!</h1>
+  <div class="stats">
+    <div class="stat"><b id="m-acertos">0</b><span>Acertos</span></div>
+    <div class="stat"><b id="m-figs">0/20</b><span>Figurinhas</span></div>
+    <div class="stat"><b id="m-min">0</b><span>Minutos ganhos</span></div>
+  </div>
+  <p>Escolha a matéria:</p>
+  <button class="btn" id="btn-mat">Matemática</button>
+  <button class="btn sec" disabled>Português (em breve)</button>
+  <button class="btn sec" disabled>Inglês (em breve)</button>
+  <button class="btn sec" id="btn-album">Meu álbum de figurinhas</button>
+  <button class="btn sec" id="btn-pais">Painel dos pais</button>
+  <p class="aviso">Nesta demonstração, o banco tem questões apenas do 4º ano.</p>
+</section>
+
+<section id="t-pratica" class="tela" hidden>
+  <div class="topo" id="p-prog"></div>
+  <div class="card">
+    <p class="msg" id="p-perg"></p>
+    <div id="p-opcs"></div>
+  </div>
+  <div id="p-fb" class="card" hidden></div>
+  <button class="btn" id="p-prox" hidden>Próxima</button>
+  <button class="btn sec" data-ir="t-menu">Sair da prática</button>
+</section>
+
+<section id="t-album" class="tela" hidden>
+  <h1>Meu álbum</h1>
+  <p id="a-count"></p>
+  <div class="grid" id="a-grid"></div>
+  <button class="btn sec" data-ir="t-menu">Voltar</button>
+</section>
+
+<section id="t-pais" class="tela" hidden>
+  <h1>Painel dos pais</h1>
+  <div id="pin-area">
+    <form id="form-pin">
+      <label>Digite a senha dos pais<input id="pin-in" inputmode="numeric" maxlength="4"></label>
+      <button class="btn" type="submit">Entrar</button>
+    </form>
+  </div>
+  <div id="pa-painel" hidden>
+    <div class="card" id="pa-dados"></div>
+    <button class="btn sec" id="btn-zerar">Zerar progresso</button>
+  </div>
+  <button class="btn sec" data-ir="t-menu">Voltar</button>
+</section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
