@@ -1,4 +1,4 @@
-const CACHE = 'aprender-brincando-v1';
+const CACHE = 'aprender-brincando-v2';
 const ARQUIVOS = [
   './',
   './index.html',

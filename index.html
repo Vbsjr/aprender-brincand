@@ -6,20 +6,20 @@
 <title>Aprender Brincando</title>
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#7c3aed">
+<meta name="theme-color" content="#070b1a">
 <link rel="icon" href="icons/icon-192.png">
 </head>
 <body>
 <div class="w">
 
 <section id="t-boas" class="tela" hidden>
-  <h1>Aprender Brincando</h1>
-  <p>Pratique matemática e ganhe figurinhas para completar seu álbum!</p>
+  <h1 class="brand">APRENDER BRINCANDO</h1>
+  <p>Pratique matemática, português e inglês e desbloqueie figurinhas no seu álbum.</p>
   <button class="btn" data-ir="t-cadastro">Começar</button>
 </section>
 
 <section id="t-cadastro" class="tela" hidden>
-  <h1>Cadastro</h1>
+  <h1 class="brand">Cadastro</h1>
   <form id="form-cad">
     <label>Nome da criança<input id="c-nome" maxlength="30" required></label>
     <label>Idade<input id="c-idade" type="number" min="5" max="12" required></label>
@@ -33,19 +33,19 @@
 </section>
 
 <section id="t-menu" class="tela" hidden>
-  <h1 id="m-ola">Oi!</h1>
+  <h1 class="brand" id="m-ola">Olá!</h1>
   <div class="stats">
     <div class="stat"><b id="m-acertos">0</b><span>Acertos</span></div>
     <div class="stat"><b id="m-figs">0/20</b><span>Figurinhas</span></div>
     <div class="stat"><b id="m-min">0</b><span>Minutos ganhos</span></div>
   </div>
   <p>Escolha a matéria:</p>
-  <button class="btn" id="btn-mat">Matemática</button>
-  <button class="btn sec" disabled>Português (em breve)</button>
-  <button class="btn sec" disabled>Inglês (em breve)</button>
+  <button class="btn" data-materia="mat">🔢 Matemática</button>
+  <button class="btn" data-materia="por">📖 Português</button>
+  <button class="btn" data-materia="ing">🌍 Inglês</button>
   <button class="btn sec" id="btn-album">Meu álbum de figurinhas</button>
   <button class="btn sec" id="btn-pais">Painel dos pais</button>
-  <p class="aviso">Nesta demonstração, o banco tem questões apenas do 4º ano.</p>
+  <p class="aviso">Nesta demonstração, cada matéria tem 10 questões do 4º ano.</p>
 </section>
 
 <section id="t-pratica" class="tela" hidden>
@@ -60,14 +60,14 @@
 </section>
 
 <section id="t-album" class="tela" hidden>
-  <h1>Meu álbum</h1>
+  <h1 class="brand">Meu álbum</h1>
   <p id="a-count"></p>
   <div class="grid" id="a-grid"></div>
   <button class="btn sec" data-ir="t-menu">Voltar</button>
 </section>
 
 <section id="t-pais" class="tela" hidden>
-  <h1>Painel dos pais</h1>
+  <h1 class="brand">Painel dos pais</h1>
   <div id="pin-area">
     <form id="form-pin">
       <label>Digite a senha dos pais<input id="pin-in" inputmode="numeric" maxlength="4"></label>
