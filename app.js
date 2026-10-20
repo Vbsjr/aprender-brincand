@@ -1,10 +1,45 @@
-const K = 'aprender-brincando-v2';
-const FIG = ['🦁','🐯','🦊','🐼','🐸','🦄','🐙','🦖','🚀','⭐','🌈','🎈','🍭','⚽','🎨','🏆','🦋','🐬','🌵','🍕'];
-const MATERIAS = {
-  mat: { nome: 'Matemática' },
-  por: { nome: 'Português' },
-  ing: { nome: 'Inglês' }
+const K = 'aprender-brincando-v4';
+const $ = id => document.getElementById(id);
+
+// Escudos originais: formas simples, cores e iniciais (não são os escudos oficiais)
+function escudo(sigla, c1, c2) {
+  return '<svg viewBox="0 0 64 72" aria-hidden="true">' +
+    '<path d="M4 4h56v34c0 14-12 24-28 30C16 62 4 52 4 38z" fill="' + c1 + '" stroke="#111" stroke-width="3"/>' +
+    '<path d="M4 22h56v16c0 10-7 18-28 24C11 56 4 48 4 38z" fill="' + c2 + '" opacity=".9"/>' +
+    '<text x="32" y="40" text-anchor="middle" font-size="13" font-weight="800" font-family="Arial,sans-serif" fill="#fff" stroke="#000" stroke-width="2" paint-order="stroke">' + sigla + '</text></svg>';
+}
+
+const TIMES = [
+  ['Santos','SAN','#FFFFFF','#111111'], ['Flamengo','FLA','#C62828','#111111'],
+  ['Corinthians','COR','#111111','#FFFFFF'], ['Palmeiras','PAL','#0B7A3B','#FFFFFF'],
+  ['São Paulo','SPF','#C62828','#FFFFFF'], ['Grêmio','GRE','#1565C0','#FFFFFF'],
+  ['Internacional','INT','#C62828','#FFFFFF'], ['Cruzeiro','CRU','#1E4FA3','#FFFFFF'],
+  ['Atlético Mineiro','CAM','#111111','#FFFFFF'], ['Vasco da Gama','VAS','#111111','#FFFFFF'],
+  ['Fluminense','FLU','#0B6B3A','#8B1E2D'], ['Botafogo','BOT','#111111','#FFFFFF']
+];
+
+// Cada figurinha: [emoji, nome] ou, no futebol, ['', nome, escudo]
+const ALBUNS = {
+  futebol: { nome: 'Futebol', itens: TIMES.map(t => ['', t[0], escudo(t[1], t[2], t[3])]) },
+  carros: { nome: 'Carros', itens: [
+    ['🚗','Carro Azul'],['🏎️','Bólido Rápido'],['🚙','Jipe Trilha'],['🚓','Viatura'],
+    ['🚕','Táxi Amarelo'],['🚒','Caminhão de Bombeiro'],['🚜','Trator'],['🚌','Ônibus'],
+    ['🚐','Van'],['🛻','Picape'],['🏁','Bandeira Quadriculada'],['🛠️','Oficina']]},
+  princesas: { nome: 'Princesas', itens: [
+    ['👸','Princesa Estrela'],['🧚','Fada Lua'],['🦄','Unicórnio Arco-íris'],['🌸','Jardim Encantado'],
+    ['👑','Coroa de Cristal'],['🏰','Castelo Rosa'],['🦋','Borboleta Mágica'],['🌟','Estrela Cadente'],
+    ['🧜','Sereia Azul'],['🌹','Rosa Dourada'],['🐚','Concha Encantada'],['💎','Tiara de Diamante']]},
+  monstrinhos: { nome: 'Monstrinhos', itens: [
+    ['👾','Monstrinho Roxo'],['🐲','Dragãozinho'],['🦖','Dino Trovão'],['🐙','Polvo Mágico'],
+    ['🦉','Coruja Sábia'],['🐸','Sapo Saltitante'],['🐱','Gato Astuto'],['🐼','Panda Forte'],
+    ['🦊','Raposa Veloz'],['🐨','Coala Doce'],['🦇','Morcego Noturno'],['🐧','Pinguim Gelado']]},
+  espaco: { nome: 'Espaço', itens: [
+    ['🚀','Foguete'],['🪐','Saturno'],['☄️','Cometa'],['🌍','Terra'],
+    ['🌙','Lua'],['☀️','Sol'],['🛸','Disco Voador'],['👽','Alienígena Simpático'],
+    ['🌟','Estrela'],['🔭','Telescópio'],['🧑‍🚀','Astronauta'],['🌌','Galáxia']]}
 };
+
+const MATERIAS = { mat: 'Matemática', por: 'Português', ing: 'Inglês' };
 
 // Banco de demonstração: 10 questões por matéria (o banco de matemática completo está no CSV)
 const Q = {
@@ -46,21 +81,23 @@ const Q = {
   ]
 };
 
-let st = { perfil: null, pin: '', stats: { mat:{a:0,e:0}, por:{a:0,e:0}, ing:{a:0,e:0} }, minutos: 0, figs: 0 };
+const padraoStats = () => ({ mat:{a:0,e:0}, por:{a:0,e:0}, ing:{a:0,e:0} });
+const padraoColecao = () => ({ futebol:0, carros:0, princesas:0, monstrinhos:0, espaco:0 });
+
+let st = { perfil: null, pin: '', album: null, stats: padraoStats(), colecao: padraoColecao(), minutos: 0, som: true };
 try {
   const salvo = JSON.parse(localStorage.getItem(K));
   if (salvo) {
     st = Object.assign(st, salvo);
-    st.stats = Object.assign({ mat:{a:0,e:0}, por:{a:0,e:0}, ing:{a:0,e:0} }, salvo.stats || {});
+    st.stats = Object.assign(padraoStats(), salvo.stats || {});
+    st.colecao = Object.assign(padraoColecao(), salvo.colecao || {});
   }
 } catch (e) {}
 
-const $ = id => document.getElementById(id);
-let materiaAtual = 'mat', sessao = [], pos = 0, respondida = false, painelLiberado = false;
+let materiaAtual = 'mat', fila = [], pos = 0, respondida = false, revisao = false;
+let sessAc = 0, sessErr = [], painelLiberado = false, popT = null;
 
-function salvar() {
-  try { localStorage.setItem(K, JSON.stringify(st)); } catch (e) {}
-}
+function salvar() { try { localStorage.setItem(K, JSON.stringify(st)); } catch (e) {} }
 
 function mostrar(id) {
   document.querySelectorAll('.tela').forEach(t => t.hidden = (t.id !== id));
@@ -75,67 +112,106 @@ function shuffle(a) {
   return a;
 }
 
-function totalAcertos() {
-  return Object.values(st.stats).reduce((s, x) => s + x.a, 0);
+function totalAcertos() { return Object.values(st.stats).reduce((s, x) => s + x.a, 0); }
+
+// Sons gerados pelo próprio navegador (sem arquivos externos)
+let audioCtx = null;
+function tom(freq, dur, tipo, vol, atraso) {
+  if (!st.som) return;
+  try {
+    audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+    const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+    const t = audioCtx.currentTime + (atraso || 0);
+    o.type = tipo || 'sine'; o.frequency.value = freq;
+    g.gain.setValueAtTime(vol || 0.15, t);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); g.connect(audioCtx.destination);
+    o.start(t); o.stop(t + dur);
+  } catch (e) {}
+}
+function somAcerto() { tom(660, 0.12); tom(990, 0.18, 'sine', 0.15, 0.12); }
+function somErro() { tom(220, 0.25, 'sawtooth', 0.07); tom(180, 0.3, 'sawtooth', 0.07, 0.18); }
+function somFig() { [523, 659, 784, 1046].forEach((f, i) => tom(f, 0.25, 'triangle', 0.14, i * 0.12)); }
+
+function raridade(i) {
+  if (i % 4 === 3) return { n: 'LENDÁRIA', c: '#facc15' };
+  if (i % 3 === 2) return { n: 'RARA', c: '#a78bfa' };
+  return { n: 'COMUM', c: '#94a3b8' };
+}
+
+// Figurinha no mesmo estilo para todos os álbuns
+function fig(item, idx, obtida) {
+  if (!obtida) return '<div class="fig off"><div class="in"><div class="vis">❔</div><div class="nm">???</div></div></div>';
+  const r = raridade(idx), poder = 60 + (idx * 7) % 35;
+  return '<div class="fig"><div class="in"><span class="raz" style="color:' + r.c + '">' + r.n + '</span>' +
+    '<div class="vis">' + (item[2] || item[0]) + '</div><div class="nm">' + item[1] + '</div>' +
+    '<div class="pw"><i style="width:' + poder + '%"></i></div></div><div class="sh"></div></div>';
 }
 
 function atualizarMenu() {
   $('m-ola').textContent = 'Olá, ' + st.perfil.nome + '!';
   $('m-acertos').textContent = totalAcertos();
-  $('m-figs').textContent = st.figs + '/' + FIG.length;
   $('m-min').textContent = st.minutos;
+  $('btn-som').textContent = 'Som: ' + (st.som ? 'ligado' : 'desligado');
+  if (st.album) {
+    $('m-figs').textContent = st.colecao[st.album] + '/' + ALBUNS[st.album].itens.length;
+    $('m-album-txt').textContent = 'Álbum atual: ' + ALBUNS[st.album].nome;
+  } else {
+    $('m-figs').textContent = '0/12';
+    $('m-album-txt').textContent = 'Você ainda não escolheu um álbum.';
+  }
+}
+
+function escolherAlbum(chave) {
+  st.album = chave;
+  salvar();
+  atualizarMenu();
+  mostrar('t-menu');
 }
 
 function renderAlbum() {
-  const g = $('a-grid');
-  g.innerHTML = '';
-  for (let i = 0; i < FIG.length; i++) {
-    const d = document.createElement('div');
-    d.className = 'slot' + (i < st.figs ? ' got' : '');
-    d.textContent = i < st.figs ? FIG[i] : '?';
-    g.appendChild(d);
-  }
-  $('a-count').textContent = 'Você tem ' + st.figs + ' de ' + FIG.length + ' figurinhas.';
+  if (!st.album) { mostrar('t-albuns'); return; }
+  const alb = ALBUNS[st.album], n = st.colecao[st.album];
+  $('a-titulo').textContent = 'Álbum ' + alb.nome;
+  $('a-count').textContent = 'Você tem ' + n + ' de ' + alb.itens.length + ' figurinhas.';
+  $('a-grid').innerHTML = alb.itens.map((item, i) => fig(item, i, i < n)).join('');
 }
 
-function renderPais() {
-  $('pin-area').hidden = painelLiberado;
-  $('pa-painel').hidden = !painelLiberado;
-  if (!painelLiberado) return;
-  const box = $('pa-dados');
-  box.innerHTML = '';
-  const linhas = [
-    'Criança: ' + st.perfil.nome + ' (' + st.perfil.idade + ' anos, ' + st.perfil.serie + 'º ano)'
-  ];
-  Object.keys(MATERIAS).forEach(m => {
-    const s = st.stats[m];
-    const total = s.a + s.e;
-    const taxa = total ? Math.round(s.a / total * 100) : 0;
-    linhas.push(MATERIAS[m].nome + ': ' + s.a + ' acertos, ' + s.e + ' erros (' + taxa + '% de acerto)');
-  });
-  linhas.push('Figurinhas conquistadas: ' + st.figs + ' de ' + FIG.length);
-  linhas.push('Minutos de tempo de tela ganhos: ' + st.minutos);
-  linhas.forEach(texto => {
-    const p = document.createElement('p');
-    p.style.margin = '8px 0';
-    p.style.fontSize = '16px';
-    p.textContent = texto;
-    box.appendChild(p);
-  });
+function ganharFig() {
+  if (!st.album) return null;
+  const alb = ALBUNS[st.album], n = st.colecao[st.album];
+  if (n >= alb.itens.length) return 'cheio';
+  st.colecao[st.album]++;
+  return { item: alb.itens[n], idx: n };
+}
+
+function mostrarPop(g) {
+  $('pop-fig').innerHTML = fig(g.item, g.idx, true);
+  $('pop').hidden = false;
+  somFig();
+  clearTimeout(popT);
+  popT = setTimeout(() => { $('pop').hidden = true; }, 3000);
 }
 
 function iniciarPratica(m) {
   materiaAtual = m;
-  sessao = shuffle(Q[m].map((_, i) => i));
-  pos = 0;
+  fila = shuffle(Q[m].map((_, i) => ({ m: m, i: i })));
+  pos = 0; sessAc = 0; sessErr = []; revisao = false;
+  mostrar('t-pratica');
+  mostrarPergunta();
+}
+
+function iniciarRevisao() {
+  fila = sessErr.slice();
+  pos = 0; sessAc = 0; sessErr = []; revisao = true;
   mostrar('t-pratica');
   mostrarPergunta();
 }
 
 function mostrarPergunta() {
-  const q = Q[materiaAtual][sessao[pos]];
+  const it = fila[pos], q = Q[it.m][it.i];
   respondida = false;
-  $('p-prog').textContent = MATERIAS[materiaAtual].nome + ' · Questão ' + (pos + 1) + ' de ' + sessao.length + ' · ' + q.t;
+  $('p-prog').textContent = (revisao ? 'Revisão · ' : '') + MATERIAS[it.m] + ' · ' + (pos + 1) + ' de ' + fila.length + ' · ' + q.t;
   $('p-perg').textContent = q.p;
   const box = $('p-opcs');
   box.innerHTML = '';
@@ -146,81 +222,91 @@ function mostrarPergunta() {
     b.onclick = () => responder(i);
     box.appendChild(b);
   });
-  $('p-fb').hidden = true;
-  $('p-prox').hidden = true;
+  $('sheet').classList.remove('on');
+  window.scrollTo(0, 0);
 }
 
 function responder(i) {
   if (respondida) return;
   respondida = true;
-  const q = Q[materiaAtual][sessao[pos]];
+  const it = fila[pos], q = Q[it.m][it.i];
   [...$('p-opcs').children].forEach((b, k) => {
     b.disabled = true;
-    if (k === q.c) b.classList.add('ok');
-    else if (k === i) b.classList.add('no');
+    if (k === q.c) b.classList.add('ok2');
+    else if (k === i) b.classList.add('no2');
   });
 
-  const acertou = i === q.c;
-  const fb = $('p-fb');
-  fb.hidden = false;
-  fb.innerHTML = '';
-  const msg = document.createElement('p');
-  msg.className = 'msg';
-  msg.textContent = acertou ? 'Muito bem!' : 'Quase! A resposta certa está em verde.';
-  const exp = document.createElement('div');
-  exp.className = 'exp';
-  exp.textContent = q.e;
-  fb.append(msg, exp);
-
-  st.minutos += acertou ? 1 : 0;
-  if (acertou) {
-    st.stats[materiaAtual].a++;
-    if (totalAcertos() % 2 === 0 && st.figs < FIG.length) {
-      st.figs++;
-      msg.textContent += ' Você ganhou a figurinha ' + FIG[st.figs - 1] + '!';
+  let msg;
+  if (i === q.c) {
+    msg = 'Muito bem!';
+    sessAc++;
+    somAcerto();
+    if (!revisao) {
+      st.stats[it.m].a++;
+      st.minutos++;
+      if (totalAcertos() % 2 === 0) {
+        const g = ganharFig();
+        if (g === 'cheio') msg += ' Álbum completo! Escolha outro no menu.';
+        else if (g) { mostrarPop(g); msg += ' Você ganhou uma figurinha!'; }
+      }
     }
   } else {
-    st.stats[materiaAtual].e++;
+    msg = 'Quase! A resposta certa está em verde.';
+    somErro();
+    sessErr.push(it);
+    if (!revisao) st.stats[it.m].e++;
   }
   salvar();
 
-  $('p-prox').hidden = false;
-  $('p-prox').textContent = pos + 1 < sessao.length ? 'Próxima' : 'Terminar';
+  $('s-msg').textContent = msg;
+  $('s-exp').textContent = q.e;
+  $('p-prox').textContent = pos + 1 < fila.length ? 'Próxima pergunta' : 'Ver resultado';
+  $('sheet').classList.add('on');
 }
 
 $('p-prox').onclick = () => {
   pos++;
-  if (pos < sessao.length) {
-    mostrarPergunta();
-  } else {
-    atualizarMenu();
-    mostrar('t-menu');
-    alert('Sessão concluída! Muito bem.');
-  }
+  if (pos < fila.length) mostrarPergunta();
+  else mostrarResumo();
 };
+
+function mostrarResumo() {
+  $('r-ac').textContent = sessAc;
+  $('r-er').textContent = sessErr.length;
+  if (revisao) {
+    $('r-txt').textContent = sessErr.length
+      ? 'Ainda há questões para revisar. Continue até acertar todas!'
+      : 'Você revisou tudo e acertou todas as questões!';
+  } else {
+    $('r-txt').textContent = sessErr.length
+      ? 'Revise as questões que errou. É assim que a gente aprende de verdade.'
+      : 'Parabéns, nenhuma resposta errada!';
+  }
+  $('btn-rev').hidden = !sessErr.length;
+  $('btn-rev').textContent = 'Revisar os ' + sessErr.length + ' erros';
+  atualizarMenu();
+  mostrar('t-resumo');
+}
+
+$('btn-rev').onclick = iniciarRevisao;
 
 $('form-cad').addEventListener('submit', e => {
   e.preventDefault();
   const pin = $('c-pin').value.trim();
-  if (!/^\d{4}$/.test(pin)) {
-    alert('A senha dos pais deve ter 4 números.');
-    return;
-  }
+  if (!/^\d{4}$/.test(pin)) { alert('A senha dos pais deve ter 4 números.'); return; }
   st.perfil = { nome: $('c-nome').value.trim(), idade: $('c-idade').value, serie: $('c-serie').value };
   st.pin = pin;
   salvar();
-  atualizarMenu();
-  mostrar('t-menu');
+  if (st.album) { atualizarMenu(); mostrar('t-menu'); }
+  else mostrar('t-albuns');
 });
 
-document.querySelectorAll('[data-materia]').forEach(b => {
-  b.onclick = () => iniciarPratica(b.dataset.materia);
-});
+document.querySelectorAll('[data-album]').forEach(b => { b.onclick = () => escolherAlbum(b.dataset.album); });
+document.querySelectorAll('[data-materia]').forEach(b => { b.onclick = () => iniciarPratica(b.dataset.materia); });
 
-$('btn-album').onclick = () => {
-  renderAlbum();
-  mostrar('t-album');
-};
+$('btn-album').onclick = () => { renderAlbum(); mostrar('t-album'); };
+$('btn-trocar').onclick = () => mostrar('t-albuns');
+$('btn-som').onclick = () => { st.som = !st.som; salvar(); atualizarMenu(); };
 
 $('btn-pais').onclick = () => {
   painelLiberado = false;
@@ -229,40 +315,58 @@ $('btn-pais').onclick = () => {
   mostrar('t-pais');
 };
 
+function renderPais() {
+  $('pin-area').hidden = painelLiberado;
+  $('pa-painel').hidden = !painelLiberado;
+  if (!painelLiberado) return;
+  const nome = st.perfil.nome;
+  let h = '<p class="topo">Criança: ' + nome + ' (' + st.perfil.idade + ' anos, ' + st.perfil.serie + 'º ano)' +
+    (st.album ? ' · Álbum: ' + ALBUNS[st.album].nome : '') + '</p>';
+  const alertas = [];
+  Object.keys(MATERIAS).forEach(m => {
+    const s = st.stats[m], t = s.a + s.e, taxa = t ? Math.round(s.a / t * 100) : 0;
+    const cor = taxa >= 70 ? '#34d399' : '#f87171';
+    h += '<p style="margin:14px 0 0;font-weight:700">' + MATERIAS[m] + ': ' + taxa + '% de acerto (' + s.a + ' acertos · ' + s.e + ' erros)</p>' +
+      '<div class="barra"><i style="width:' + taxa + '%;background:' + cor + '"></i></div>';
+    if (t >= 5 && taxa < 70) alertas.push(['bad', '⚠️ ' + nome + ' está abaixo da média em ' + MATERIAS[m] + ' (' + taxa + '%). Errou ' + s.e + ' questões: revise com ele.']);
+    else if (t >= 5) alertas.push(['good', '✅ Bom desempenho em ' + MATERIAS[m] + ' (' + taxa + '%).']);
+    else alertas.push(['info', 'ℹ️ Ainda há poucas respostas em ' + MATERIAS[m] + ' para avaliar.']);
+  });
+  h += '<p style="margin:18px 0 0;font-weight:700">Álbuns</p>';
+  Object.keys(ALBUNS).forEach(k => {
+    const n = st.colecao[k], tot = ALBUNS[k].itens.length, pct = Math.round(n / tot * 100);
+    h += '<p style="margin:10px 0 0;font-size:14px">' + ALBUNS[k].nome + ': ' + n + ' de ' + tot + '</p>' +
+      '<div class="barra"><i style="width:' + pct + '%;background:linear-gradient(90deg,#22d3ee,#e879f9)"></i></div>';
+  });
+  h += '<p style="margin:14px 0 0">Minutos de tempo de tela ganhos: <b>' + st.minutos + '</b></p>';
+  h += alertas.map(a => '<div class="alerta ' + a[0] + '">' + a[1] + '</div>').join('');
+  $('pa-dados').innerHTML = h;
+}
+
 $('form-pin').addEventListener('submit', e => {
   e.preventDefault();
-  if ($('pin-in').value === st.pin) {
-    painelLiberado = true;
-    renderPais();
-  } else {
-    alert('Senha incorreta.');
-    $('pin-in').value = '';
-  }
+  if ($('pin-in').value === st.pin) { painelLiberado = true; renderPais(); }
+  else { alert('Senha incorreta.'); $('pin-in').value = ''; }
 });
 
 $('btn-zerar').onclick = () => {
-  if (!confirm('Zerar acertos, erros, figurinhas e minutos?')) return;
-  st.stats = { mat:{a:0,e:0}, por:{a:0,e:0}, ing:{a:0,e:0} };
+  if (!confirm('Zerar acertos, erros, figurinhas e minutos de todos os álbuns?')) return;
+  st.stats = padraoStats();
+  st.colecao = padraoColecao();
   st.minutos = 0;
-  st.figs = 0;
   salvar();
   renderPais();
 };
 
 document.querySelectorAll('[data-ir]').forEach(b => {
   b.addEventListener('click', () => {
-    const alvo = b.dataset.ir;
-    if (alvo === 't-menu') atualizarMenu();
-    mostrar(alvo);
+    if (b.dataset.ir === 't-menu') atualizarMenu();
+    mostrar(b.dataset.ir);
   });
 });
 
-if (st.perfil) {
-  atualizarMenu();
-  mostrar('t-menu');
-} else {
-  mostrar('t-boas');
-}
+if (st.perfil) { atualizarMenu(); mostrar('t-menu'); }
+else mostrar('t-boas');
 
 
 if ('serviceWorker' in navigator) {

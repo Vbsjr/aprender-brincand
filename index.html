@@ -6,15 +6,16 @@
 <title>Aprender Brincando</title>
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#070b1a">
+<meta name="theme-color" content="#05060f">
 <link rel="icon" href="icons/icon-192.png">
 </head>
 <body>
+<div class="bg"></div>
 <div class="w">
 
 <section id="t-boas" class="tela" hidden>
-  <h1 class="brand">APRENDER BRINCANDO</h1>
-  <p>Pratique matemática, português e inglês e desbloqueie figurinhas no seu álbum.</p>
+  <h1 class="brand">APRENDER</h1>
+  <p>Pratique matemática, português e inglês e complete o seu álbum de figurinhas.</p>
   <button class="btn" data-ir="t-cadastro">Começar</button>
 </section>
 
@@ -32,35 +33,62 @@
   </form>
 </section>
 
+<section id="t-albuns" class="tela" hidden>
+  <h1 class="brand">Escolha seu álbum</h1>
+  <p>Cada álbum tem 12 figurinhas. Você pode trocar de álbum a qualquer momento, e o progresso de cada um fica guardado.</p>
+  <button class="btn" data-album="futebol">⚽ Futebol</button>
+  <button class="btn" data-album="carros">🏎️ Carros</button>
+  <button class="btn" data-album="princesas">👑 Princesas</button>
+  <button class="btn" data-album="monstrinhos">👾 Monstrinhos</button>
+  <button class="btn" data-album="espaco">🚀 Espaço</button>
+</section>
+
 <section id="t-menu" class="tela" hidden>
   <h1 class="brand" id="m-ola">Olá!</h1>
   <div class="stats">
     <div class="stat"><b id="m-acertos">0</b><span>Acertos</span></div>
-    <div class="stat"><b id="m-figs">0/20</b><span>Figurinhas</span></div>
+    <div class="stat"><b id="m-figs">0/12</b><span>Figurinhas</span></div>
     <div class="stat"><b id="m-min">0</b><span>Minutos ganhos</span></div>
   </div>
+  <p id="m-album-txt"></p>
   <p>Escolha a matéria:</p>
   <button class="btn" data-materia="mat">🔢 Matemática</button>
   <button class="btn" data-materia="por">📖 Português</button>
   <button class="btn" data-materia="ing">🌍 Inglês</button>
-  <button class="btn sec" id="btn-album">Meu álbum de figurinhas</button>
+  <button class="btn sec" id="btn-album">Ver meu álbum</button>
+  <button class="btn sec" id="btn-trocar">Trocar de álbum</button>
+  <button class="btn sec" id="btn-som">Som</button>
   <button class="btn sec" id="btn-pais">Painel dos pais</button>
   <p class="aviso">Nesta demonstração, cada matéria tem 10 questões do 4º ano.</p>
 </section>
 
-<section id="t-pratica" class="tela" hidden>
+<section id="t-pratica" class="tela pratica" hidden>
   <div class="topo" id="p-prog"></div>
   <div class="card">
-    <p class="msg" id="p-perg"></p>
-    <div id="p-opcs"></div>
+    <p class="msg" id="p-perg" style="font-size:18px;font-weight:800"></p>
+    <div class="opcs" id="p-opcs"></div>
   </div>
-  <div id="p-fb" class="card" hidden></div>
-  <button class="btn" id="p-prox" hidden>Próxima</button>
   <button class="btn sec" data-ir="t-menu">Sair da prática</button>
+  <div class="sheet" id="sheet">
+    <p class="msg" id="s-msg"></p>
+    <div class="exp" id="s-exp"></div>
+    <button class="btn" id="p-prox">Próxima pergunta</button>
+  </div>
+</section>
+
+<section id="t-resumo" class="tela" hidden>
+  <h1 class="brand">Resultado</h1>
+  <div class="stats">
+    <div class="stat"><b id="r-ac">0</b><span>Acertos</span></div>
+    <div class="stat"><b id="r-er">0</b><span>Erros</span></div>
+  </div>
+  <p id="r-txt"></p>
+  <button class="btn" id="btn-rev">Revisar os erros</button>
+  <button class="btn sec" data-ir="t-menu">Voltar ao menu</button>
 </section>
 
 <section id="t-album" class="tela" hidden>
-  <h1 class="brand">Meu álbum</h1>
+  <h1 class="brand" id="a-titulo">Álbum</h1>
   <p id="a-count"></p>
   <div class="grid" id="a-grid"></div>
   <button class="btn sec" data-ir="t-menu">Voltar</button>
@@ -82,6 +110,8 @@
 </section>
 
 </div>
+
+<div class="pop" id="pop" hidden><div id="pop-fig"></div><p>NOVA FIGURINHA!</p></div>
 
 <script src="app.js"></script>
 </body>
